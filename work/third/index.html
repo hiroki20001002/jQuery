@@ -30,14 +30,7 @@
       // .eq() 引数に応じたindexの要素を指定します。
       // .addClass() クラスを追加します。
       // .removeClass() クラスを削除します。
-      $(function(){
-        $(".nav clearfix").on('click',function(){
-          $(".nav clearfix,.contents").addClass('is-hidden');
-          $(this).removeClass('is-hidden');
-          var index = $(this).index;
-          $('.contents').eq(index).addClass('is-hidden');
-        });
-      });
+
     </script>
   </body>
 </html>
