@@ -38,6 +38,13 @@
           $('.contents').eq(index).addClass('is-hidden');
         });
       });
+      $(function(){
+        $('.wrapper .is-pink,.wrapper .is-green,.wrapper .is-yellow').on('click',function(){
+          let index = $('.wrapper .is-pink,.wrapper .is-green,.wrapper .is-yellow').index(this);
+          $('.contents .is-pink,.contents .is-green,.contents .is-yellow').addClass('is-hidden');
+          $('.contents .is-pink,.contents .is-green,.contents .is-yellow').eq(index).removeClass('is-hidden');
+        });
+      });
     </script>
   </body>
 </html>

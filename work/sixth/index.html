@@ -16,6 +16,105 @@
   <script src="../../common/js/jquery.js"></script>
   <script>
     // 回答はここに書いてね
+      $(function() {
+      const wrapper = $('#wrapper');
+
+      // はじめの「ポケモンを探す」ボタン
+      const searchBtnHtml = '<button type="button" class="btn search-btn" id="pokemon_search">ポケモンを探す</button>';
+
+      let Pokemon = {};      
+
+      // 「ポケモンを探す」ボタン押下時
+      wrapper.on('click', '#pokemon_search', function() {
+        const randomId = Math.floor(Math.random() * 151) + 1;
+        const url = `https://pokeapi.co/api/v2/pokemon/${randomId}`;
+
+        //ポケモン情報取得
+        $.ajax({
+          url: url,
+          method: 'GET',
+        }).done(function(res) {
+          const sprite = res.sprites.front_default;
+
+          //日本語名取得
+          $.ajax({
+            url: res.species.url,
+            method: 'GET',
+          }).done(function(speciesRes) {
+            const jpNameObj = speciesRes.names.find(n => n.language.name === 'ja-Hrkt');
+            const jpName = jpNameObj ? jpNameObj.name : res.name;
+
+            Pokemon.name = jpName;
+            Pokemon.image = sprite;
+
+            wrapper.html(encountHtml);
+            wrapper.find('.name').text(`${Pokemon.name} が現れた！`);
+            wrapper.find('.img').attr('src', Pokemon.image).attr('alt', Pokemon.name);
+          }).fail(function() {
+            alert('ポケモンの名前取得に失敗しました');
+          });
+
+        }).fail(function() {
+          alert('ポケモン情報の取得に失敗しました');
+        });
+      });
+
+
+      // 「ポケモンを探す」後の画面表示
+      let encountHtml =
+    `
+        <p class="name"></p>
+        <div>
+          <img class="img" src="" alt="">
+        </div>
+        <div>
+          <button class="btn" id="catch">捕まえる</button>
+          <button class="btn" data-js="reset">逃げる</button>
+        </div>
+    `
+
+      // 「捕まえる」ボタン押下時
+      wrapper.on('click', '#catch', function() {
+        const isSuccess = Math.random() < 0.5;
+
+        if (isSuccess) {
+          // モンスターボール画像を取得
+          $.ajax({
+            url: 'https://pokeapi.co/api/v2/item/4',
+            method: 'GET',
+          }).done(function(data) {
+            const image = data.sprites.default;
+            wrapper.html(doneHtml);
+            wrapper.find('.img').attr('src', image).attr('alt', 'モンスターボール');
+          }).fail(function() {
+            alert('モンスターボールの情報取得に失敗しました');
+          });
+        } else {
+          wrapper.html(failHtml);
+        }
+      });
+
+      // 「捕まえる」成功時の画面表示
+      let doneHtml =
+      `
+        <p class="name">ゲットしました</p>
+        <div>
+          <img class="img">
+        </div>
+        <button class="btn" data-js="reset">戻る</button>
+      `
+      // 「捕まえる」失敗時の画面表示
+      let failHtml =
+      `
+        <p class="text">逃げられてしまった...</p>
+        <button class="btn mt" data-js="reset">戻る</button>
+      `
+
+      // 「逃げる」「戻る」ボタン押下時
+      wrapper.on('click', '[data-js="reset"]', function() {
+        wrapper.html(searchBtnHtml);
+      });
+    });
   </script>
 </body>
 </html>
